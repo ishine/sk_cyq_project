@@ -10,8 +10,7 @@ class Model(nn.module):
             rnn_units2,
             embed_size,
             frame_size,
-            pcm_bits,
-            output_size,
+            num_mixture,
             training=False):
 
         padding = 0 if training else 1
@@ -36,6 +35,8 @@ class Model(nn.module):
         self.frame_size = frame_size
         self.rnn_units1 = rnn_units1
         self.rnn_units2 = rnn_units2
+        self.output_size = num_mixture * 3
+
     def forward(self, pcm, feat):
         cfeat = self.fconv1(feat)
         cfeat = self.fconv2(cfeat)
@@ -47,7 +48,8 @@ class Model(nn.module):
         gru_out1, _ = nn.GRU(rnn_in1.shape[-1], self.rnn_units1, batch_firse=False)
         rnn_in2 = torch.cat([gru_out1, cfeat], dim=-1)
         gru_out2, _ = nn.GRU(rnn_in2.shape[-1], self.rnn_units2, batch_firse=False)
-        ulaw_prob = MDense(gru_out2)
+        md = MDense(output_size)
+        ulaw_prob = md(gru_out2)
         return ulaw_prob
 
 
