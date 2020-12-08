@@ -48,7 +48,7 @@ class Model(nn.module):
         gru_out1, _ = nn.GRU(rnn_in1.shape[-1], self.rnn_units1, batch_firse=False)
         rnn_in2 = torch.cat([gru_out1, cfeat], dim=-1)
         gru_out2, _ = nn.GRU(rnn_in2.shape[-1], self.rnn_units2, batch_firse=False)
-        md = MDense(output_size)
+        md = MDense(gru_out2.shape[-1], output_size)
         ulaw_prob = md(gru_out2)
         return ulaw_prob
 
