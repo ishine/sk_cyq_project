@@ -21,6 +21,7 @@ class lpcnetDataset(Dataset):
         in_data =  self.in_datas[index]
         mel = self.mels[index]
         output = self.outputs[index]
+        return in_data, mel, output
 
     def __len__(self):
         return len(self.outputs)
